@@ -1,0 +1,6 @@
+// 静态检查：键名拼错（反例）
+__init__ {
+    main() {
+        say(keyboard(ww))
+    }
+}

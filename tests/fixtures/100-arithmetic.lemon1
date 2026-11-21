@@ -1,0 +1,19 @@
+// 基础运算：+ - * / 与文本拼接
+__init__ {
+    int a = 7
+    int b = 2
+
+    def twice(x) {
+        say(x * 2)
+    }
+
+    main() {
+        say(1 + 2 * 3)
+        say((1 + 2) * 3)
+        say(a / b)
+        say(a + 0 - b * 2)
+        say(1.0 / 4)
+        twice(a / b)
+        say(你好 + ， + 世界)
+    }
+}

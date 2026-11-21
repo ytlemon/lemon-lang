@@ -1,0 +1,14 @@
+set mod public{
+    class public{
+        #incloud gamemodmake
+        modmain(){                        //模组的主要部分
+            auther = dev                  //作者
+            game = "neno defender"        //给霓虹守线游戏
+            setLevel("第一关")
+            setDifficulty(3)
+            spawnEnemy("boss", 2)
+            addItem("能量核心")
+            say(作者 + auther + " 为 " + game + " 制作了模组")
+        }
+    }
+}

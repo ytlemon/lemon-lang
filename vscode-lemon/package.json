@@ -1,0 +1,159 @@
+{
+  "name": "lemon-language",
+  "displayName": "Lemon Language",
+  "description": "Lemon 编程语言（.lemon1）的语法高亮、代码片段与实时语法/类型诊断",
+  "icon": "icons/extension.png",
+  "version": "0.4.3",
+  "publisher": "lemon-lang",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.85.0",
+    "node": ">=18"
+  },
+  "categories": [
+    "Programming Languages",
+    "Linters"
+  ],
+  "keywords": [
+    "lemon",
+    "lemonlang",
+    "多文件",
+    "编程语言"
+  ],
+  "main": "./out/extension.js",
+  "activationEvents": [
+    "onLanguage:lemon",
+    "onCommand:lemon.runFile",
+    "onCommand:lemon.checkFile",
+    "onCommand:lemon.openRepl"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "lemon",
+        "aliases": [
+          "Lemon",
+          "lemon"
+        ],
+        "extensions": [
+          ".lemon1"
+        ],
+        "icon": {
+          "light": "./icons/lemon-light.png",
+          "dark": "./icons/lemon-dark.png"
+        },
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "lemon",
+        "scopeName": "source.lemon",
+        "path": "./syntaxes/lemon.tmLanguage.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "lemon",
+        "path": "./snippets/lemon.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "lemon.runFile",
+        "title": "运行当前文件",
+        "category": "Lemon",
+        "icon": "$(play)"
+      },
+      {
+        "command": "lemon.checkFile",
+        "title": "检查当前文件",
+        "category": "Lemon",
+        "icon": "$(check)"
+      },
+      {
+        "command": "lemon.openRepl",
+        "title": "打开 REPL 终端",
+        "category": "Lemon",
+        "icon": "$(terminal)"
+      }
+    ],
+    "menus": {
+      "editor/title/run": [
+        {
+          "command": "lemon.runFile",
+          "when": "resourceLangId == lemon || resourceLangId == lemonmod",
+          "group": "navigation@1"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "lemon.checkFile",
+          "when": "resourceLangId == lemon",
+          "group": "navigation@2"
+        },
+        {
+          "command": "lemon.openRepl",
+          "when": "resourceLangId == lemon",
+          "group": "navigation@3"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "lemon.runFile",
+          "when": "resourceLangId == lemon || resourceLangId == lemonmod",
+          "group": "navigation@1"
+        },
+        {
+          "command": "lemon.checkFile",
+          "when": "resourceLangId == lemon",
+          "group": "navigation@2"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "lemon.runFile",
+          "when": "resourceExtname == .lemon1 || resourceExtname == .mod1 || resourceExtname == .lemon2",
+          "group": "navigation@1"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "lemon.runFile",
+        "key": "ctrl+alt+r",
+        "mac": "cmd+alt+r",
+        "when": "editorLangId == lemon || editorLangId == lemonmod"
+      },
+      {
+        "command": "lemon.openRepl",
+        "key": "ctrl+alt+l",
+        "mac": "cmd+alt+l"
+      }
+    ],
+    "configuration": {
+      "title": "Lemon",
+      "properties": {
+        "lemon.executablePath": {
+          "type": "string",
+          "default": "lemon",
+          "description": "lemon 可执行文件的路径。留空或保持默认时，会先在当前工作区的 dist 目录中查找 lemon(.exe)，其次从 PATH 查找。"
+        },
+        "lemon.diagnostics.enable": {
+          "type": "boolean",
+          "default": true,
+          "description": "在打开、编辑与保存 .lemon1 文件时自动调用 lemon check 进行语法与类型检查。"
+        },
+        "lemon.diagnostics.debounceMs": {
+          "type": "number",
+          "default": 300,
+          "minimum": 0,
+          "description": "自动检查的防抖延迟（毫秒）。"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "node ../scripts/build-extension.mjs"
+  }
+}

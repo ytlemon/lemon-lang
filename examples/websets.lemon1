@@ -1,0 +1,40 @@
+// websets()：与 main() 同级的第二个入口，用声明式写法描述一个网页。
+//
+// 需要 #incloud web；main() 跑完之后会生成同名 .html 并打开浏览器：
+//     node bin/lemon.js examples/websets.lemon1
+// 不想让它弹浏览器（脚本 / CI）就加 --no-open：
+//     node bin/lemon.js examples/websets.lemon1 --no-open
+#incloud web
+
+__init__ {
+    text 本地服务 = "localhost:9000"
+    int 边距 = 16
+
+    main() {
+        say("正在准备页面")
+    }
+
+    websets() {
+        web.init() {
+            // button：to 是跳转地址，可以引用变量；没写协议会补 http://
+            button {
+                to 本地服务
+            }
+            button {
+                to "https://example.com"       // 地址里的 : 要加引号
+            }
+
+            // div：in (x1,y1;x2,y2) 是位置盒子（px），color 是背景色（#rrggbb / #rgb）。
+            // 花括号里可以写文本、再套 div，或者放 button；属性括号可以整个省略。
+            div (in (边距,边距;240,120); color=#1f6feb) {
+                一块蓝色面板
+                div (in (8,8;100,40); color=#ffffff) {
+                    嵌在里面的白块
+                }
+                button {
+                    to "https://example.com/inside"
+                }
+            }
+        }
+    }
+}

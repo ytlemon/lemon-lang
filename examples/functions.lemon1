@@ -1,0 +1,18 @@
+// def 声明函数；函数整体提升，因此可以先调用后声明
+__init__ {
+    int version = 1
+
+    main() {
+        banner()
+        greet(小明)
+    }
+
+    def banner() {
+        say("———Lemon———")
+    }
+
+    def greet(who) {
+        say("你好")
+        say(who)
+    }
+}

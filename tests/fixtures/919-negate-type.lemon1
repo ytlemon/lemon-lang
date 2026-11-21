@@ -1,0 +1,9 @@
+// 静态检查：'!' 只接受 bool（反例）
+__init__ {
+    main() {
+        text name = Lemon
+        if !name {
+            say("成立")
+        }
+    }
+}

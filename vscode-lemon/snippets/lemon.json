@@ -1,0 +1,180 @@
+{
+  "Lemon 程序骨架": {
+    "prefix": ["init", "__init__"],
+    "body": ["__init__ {", "    main() {", "        ${1:say(\"你好\")}", "    }", "}"],
+    "description": "创建 __init__ 外壳与 main() 主程序"
+  },
+  "main 主程序": {
+    "prefix": "main",
+    "body": ["main() {", "    $0", "}"],
+    "description": "声明 main() 主程序"
+  },
+  "int 变量": {
+    "prefix": ["int", "leti"],
+    "body": ["int ${1:a} = ${2:1}"],
+    "description": "声明整数变量"
+  },
+  "double 变量": {
+    "prefix": ["double", "letd"],
+    "body": ["double ${1:b} = ${2:1.5}"],
+    "description": "声明小数变量"
+  },
+  "text 变量": {
+    "prefix": ["text", "lets"],
+    "body": ["text ${1:c} = ${2:你好}"],
+    "description": "声明文本变量（值可以不加引号）"
+  },
+  "bool 变量": {
+    "prefix": ["bool", "letb"],
+    "body": ["bool ${1:flag} = ${2:true}"],
+    "description": "声明真假值变量（true / false）"
+  },
+  "def 函数": {
+    "prefix": "def",
+    "body": ["def ${1:name}(${2:arg}) {", "    say(${2:arg})", "}"],
+    "description": "声明函数"
+  },
+  "say 输出": {
+    "prefix": ["say", "print"],
+    "body": ["say(${1:你好})"],
+    "description": "输出一个值并换行"
+  },
+  "try / catch": {
+    "prefix": ["try", "catch"],
+    "body": [
+      "try {",
+      "    ${1:say(\"有风险的操作\")}",
+      "} catch (${2:错误}) {",
+      "    say(${2:错误})",
+      "}"
+    ],
+    "description": "捕获运行期错误"
+  },
+  "错误值字段": {
+    "prefix": ["err"],
+    "body": ["${1:错误}.code\n${1:错误}.line\n${1:错误}.message"],
+    "description": "错误值的 code / line / message 字段"
+  },
+  "引入源文件": {
+    "prefix": ["incloud", "inc"],
+    "body": ["#incloud ${1:工具}"],
+    "description": "引入源文件（同目录，自动补 .lemon1；写在行首、独占一行）"
+  },
+  "引入能力模块": {
+    "prefix": ["incloudw", "incweb"],
+    "body": ["#incloud web"],
+    "description": "启用 web 能力模块（openUrl / fetchText）"
+  },
+  "websets 网页界面": {
+    "prefix": ["websets", "web"],
+    "body": [
+      "websets() {",
+      "    web.init() {",
+      "        button {",
+      "            to \"${1:localhost:9000}\"",
+      "        }",
+      "    }",
+      "}"
+    ],
+    "description": "声明式网页界面（需要 #incloud web；main() 跑完后生成 .html 并打开浏览器）"
+  },
+  "websets 按钮": {
+    "prefix": ["button"],
+    "body": ["button {", "    to \"${1:localhost:9000}\"", "}"],
+    "description": "页面上的一个跳转按钮（地址要加引号）"
+  },
+  "websets div 容器": {
+    "prefix": ["div"],
+    "body": [
+      "div (in (${1:0},${2:0};${3:256},${4:256}); color=${5:#ffffff}) {",
+      "    ${6:内容}",
+      "}"
+    ],
+    "description": "带位置盒子与颜色的容器（in 定义坐标与宽高，color 是背景色；括号可省略）"
+  },
+  "抓取网页": {
+    "prefix": ["fetch", "fetchtext"],
+    "body": ["fetchText(\"${1:https://example.com}\")"],
+    "description": "取回网页正文（需先 #incloud web；网址必须加引号）"
+  },
+  "打开网页": {
+    "prefix": ["openurl"],
+    "body": ["openUrl(\"${1:https://example.com}\")"],
+    "description": "用系统默认浏览器打开（需先 #incloud web）"
+  },
+  "if 分支": {
+    "prefix": ["if", "ife"],
+    "body": [
+      "if ${1:a > 0} {",
+      "    ${2:say(\"正\")}",
+      "} elif ${3:b == 0} {",
+      "    ${4:say(\"零\")}",
+      "} else {",
+      "    ${5:say(\"负\")}",
+      "}"
+    ],
+    "description": "if / elif / else 条件分支（不需要 else 时删掉后两段即可）"
+  },
+  "if 单支": {
+    "prefix": ["if1"],
+    "body": ["if ${1:a > 0} {", "    ${2:say(\"成立\")}", "}"],
+    "description": "只有一个分支的 if"
+  },
+  "比较与逻辑": {
+    "prefix": ["cmp"],
+    "body": ["${1:a} ${2|==,!=,<,<=,>,>=|} ${3:b} ${4|&&,\\|\\||} ${5:c} ${6|==,!=,<,<=,>,>=|} ${7:d}"],
+    "description": "比较与逻辑运算示例（&& 与 || 会短路求值）"
+  },
+  "cycle 重复 N 次": {
+    "prefix": ["cycle", "for"],
+    "body": ["cycle(${1:3}) {", "    say(${2:i})", "}"],
+    "description": "重复 N 次；体内 i 从 0 递增到 N-1"
+  },
+  "cycle 无限循环 + break": {
+    "prefix": ["cyclew", "while"],
+    "body": ["cycle() {", "    if ${1:i >= 5} {", "        break", "    }", "    ${2:say(i)}", "}"],
+    "description": "无限循环，满足条件时用 break 跳出（相当于 while true）"
+  },
+  "break": {
+    "prefix": ["break"],
+    "body": ["break"],
+    "description": "跳出最内层的 cycle 循环"
+  },
+  "keyboard 轮询": {
+    "prefix": ["keyboard", "key"],
+    "body": [
+      "cycle() {",
+      "    if keyboard(${1:q}) {",
+      "        break",
+      "    }",
+      "    if keyboard(${2:w}) {",
+      "        ${3:say(\"前进\")}",
+      "    }",
+      "}"
+    ],
+    "description": "用 cycle 轮询键盘（需要真实终端；按 ${1:q} 退出）"
+  },
+  "waitKey 阻塞等待": {
+    "prefix": ["waitkey", "wait"],
+    "body": ["say(\"按 ${1:空格} 继续……\")", "waitKey(${2:space})"],
+    "description": "停在这一行直到按键（需要真实终端）"
+  },
+  "sleep 暂停": {
+    "prefix": ["sleep"],
+    "body": ["sleep(${1|100ms,500ms,1s,1min|})"],
+    "description": "暂停（单位是秒；带单位的写法更直观）"
+  },
+  "限帧循环": {
+    "prefix": ["frame", "loop"],
+    "body": [
+      "cycle() {",
+      "    if keyboard(${1:q}) {",
+      "        break",
+      "    }",
+      "    ${2:say(\"帧\")}",
+      "    sleep(${3:20ms})",
+      "}"
+    ],
+    "description": "用 sleep 限帧的循环（约 50 帧/秒），需要真实终端"
+  }
+}

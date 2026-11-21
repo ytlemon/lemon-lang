@@ -1,0 +1,18 @@
+// 三种类型：int / double / text
+__init__ {
+    int count = 3
+    double price = 12.5
+    text name = Lemon
+
+    def greet(who) {
+        say(who)
+    }
+
+    main() {
+        say(count)
+        say(price)
+        say(name)
+        greet(count)
+        greet(小明)
+    }
+}

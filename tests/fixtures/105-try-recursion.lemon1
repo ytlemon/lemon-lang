@@ -1,0 +1,15 @@
+// try / catch 让"无限递归"变成可控：捕获后程序继续
+__init__ {
+    def loop() {
+        loop()
+    }
+
+    main() {
+        try {
+            loop()
+        } catch (错误) {
+            say(错误.code)
+        }
+        say("拦住了")
+    }
+}

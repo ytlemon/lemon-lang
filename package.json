@@ -1,0 +1,54 @@
+{
+  "name": "lemon-lang",
+  "version": "1.0.0",
+  "description": "Lemon 编程语言（.lemon1）：C 风格命令式、静态类型、__init__/main 入口、裸文本字面量、if/cycle、键盘输入与时间单位",
+  "keywords": [
+    "lemon",
+    "programming-language",
+    "interpreter",
+    "compiler"
+  ],
+  "license": "MIT",
+  "bin": {
+    "lemon": "bin/lemon.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "files": [
+    "bin",
+    "dist",
+    "docs",
+    "examples",
+    "README.md"
+  ],
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "compile": "tsc -p tsconfig.json",
+    "test": "npm run compile && node --test \"build/tests/**/*.test.js\"",
+    "build": "npm run typecheck && node scripts/build.mjs",
+    "exe": "npm run build && node scripts/make-exe.mjs",
+    "repl": "node bin/lemon.js",
+    "icons": "node scripts/make-icons.mjs",
+    "release": "node scripts/make-release.mjs",
+    "mod:typecheck": "tsc -p mod/tsconfig.json --noEmit",
+    "mod:build": "tsc -p mod/tsconfig.json",
+    "mod:test": "npm run mod:build && node --test \"mod/build/tests/**/*.test.js\"",
+    "mod:run": "npm run mod:build && node mod/build/src/cli.js",
+    "mod:ext:typecheck": "tsc -p mod/vscode-lemonmod/tsconfig.json",
+    "mod:ext:build": "npm run mod:ext:typecheck && node scripts/build-mod-extension.mjs",
+    "mod:ext:package": "npm run mod:ext:build && node scripts/package-mod-extension.mjs",
+    "ext:typecheck": "tsc -p vscode-lemon/tsconfig.json",
+    "ext:build": "npm run ext:typecheck && node scripts/build-extension.mjs",
+    "ext:package": "npm run ext:build && node scripts/package-extension.mjs",
+    "clean": "node -e \"const fs=require('fs');for(const d of['build','mod/build','mod/vscode-lemonmod/out','dist','vscode-lemon/out'])fs.rmSync(d,{recursive:true,force:true})\""
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^3.2.1",
+    "esbuild": "^0.24.2",
+    "postject": "^1.0.0-alpha.6",
+    "typescript": "^5.7.2"
+  }
+}

@@ -1,0 +1,26 @@
+// cycle() 无限循环 + break 跳出；i 一直递增
+__init__ {
+    main() {
+        // 找到 i * 7 不小于 20 的第一个 i
+        cycle() {
+            if i * 7 >= 20 {
+                break
+            }
+            say(i)
+        }
+        say("跳出")
+
+        // break 写在 try 里也不会被 catch 吃掉
+        cycle() {
+            try {
+                if i == 2 {
+                    break
+                }
+                say(i)
+            } catch (错误) {
+                say("不该出现")
+            }
+        }
+        say("结束")
+    }
+}

@@ -1,0 +1,16 @@
+// 函数提升：main 里先调用，函数在后面才声明
+__init__ {
+    main() {
+        banner()
+        greet(小明)
+    }
+
+    def banner() {
+        say("———Lemon———")
+    }
+
+    def greet(who) {
+        say("你好")
+        say(who)
+    }
+}

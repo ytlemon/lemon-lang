@@ -1,0 +1,6 @@
+set hello public{    //声明文件
+    class public{       //初始化
+        say(hello)  //说“你好”
+        printf("hello")   //说“你好”
+    }
+}

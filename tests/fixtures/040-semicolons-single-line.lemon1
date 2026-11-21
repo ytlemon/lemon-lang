@@ -1,0 +1,2 @@
+// 全部写在一行：用分号分隔语句
+__init__ { int a = 1; text b = 两句; main() { say(a); say(b) } }

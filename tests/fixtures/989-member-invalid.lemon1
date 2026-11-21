@@ -1,0 +1,7 @@
+// 反例：对文本取字段
+__init__ {
+    main() {
+        text name = Lemon
+        say(name.code)
+    }
+}

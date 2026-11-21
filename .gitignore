@@ -1,0 +1,21 @@
+# 依赖
+/node_modules/
+
+# 构建产物
+/build/
+/dist/
+/vscode-lemon/out/
+/mod/build/
+/mod/vscode-lemonmod/out/
+
+# 打包产物
+*.vsix
+*.zip
+
+# 日志与临时文件
+*.log
+npm-debug.log*
+
+# 误敲出来的残留文件与临时脚本
+/nul; Write-Output ----done----
+/tmp-fs.lemon1

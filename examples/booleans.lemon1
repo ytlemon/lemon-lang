@@ -1,0 +1,36 @@
+// bool：真假值 + 比较运算 + 逻辑运算
+__init__ {
+    int 分数 = 85
+    text 名字 = 小明
+
+    main() {
+        // 1) bool 变量与字面量
+        bool 及格 = 分数 >= 60
+        bool 优秀 = 分数 >= 90
+        say(及格)
+        say(优秀)
+        say(true)
+        say(false)
+
+        // 2) 六个比较运算符，结果都是 bool
+        say(1 == 1)
+        say(1 == 1.0)      // int 与 double 按数值比较
+        say(1 != 2)
+        say(1 < 2)
+        say(2 <= 2)
+        say(3 > 4)
+        say(3 >= 3)
+        say(名字 == 小明)
+        say(名字 != 小红)
+
+        // 3) 逻辑运算：&& 与 || 会短路，! 取反
+        say(及格 && !优秀)
+        say(优秀 || 分数 < 0)
+        say(!(1 > 2))
+
+        // 4) 短路演示：左侧已能定下结果时，右侧的 1 / zero 不会被求值
+        int zero = 1 - 1
+        say(及格 || 1 / zero > 0)   // 及格是 true，|| 直接得 true
+        say(优秀 && 1 / zero > 0)   // 优秀是 false，&& 直接得 false
+    }
+}

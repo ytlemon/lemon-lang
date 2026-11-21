@@ -1,0 +1,210 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 880" width="1280" height="880" role="img" aria-label="Lemon 语言架构图">
+  <title>Lemon 语言架构</title>
+  <desc>Lemon 解释器的四层流水线（词法 → 语法 → 静态检查 → 树遍历求值）、运行期支撑组件，以及 CLI / lemon.exe / VS Code 扩展三种交付形态。</desc>
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#475569"/>
+    </marker>
+    <marker id="arrowDash" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+
+  <style>
+    .bg { fill: #f8fafc; }
+    .title { font: 700 26px "Microsoft YaHei","PingFang SC","Noto Sans CJK SC",sans-serif; fill: #0f172a; }
+    .subtitle { font: 400 13px "Microsoft YaHei","PingFang SC","Noto Sans CJK SC",sans-serif; fill: #64748b; }
+    .grouplabel { font: 700 14px "Microsoft YaHei","PingFang SC","Noto Sans CJK SC",sans-serif; }
+    .node { fill: #ffffff; stroke-width: 1.5; rx: 9; }
+    .nt { font: 600 14px "Microsoft YaHei","PingFang SC","Noto Sans CJK SC",sans-serif; fill: #0f172a; }
+    .nd { font: 400 11.5px "Microsoft YaHei","PingFang SC","Noto Sans CJK SC",sans-serif; fill: #475569; }
+    .edge { stroke: #475569; stroke-width: 1.8; fill: none; marker-end: url(#arrow); }
+    .edge-dash { stroke: #94a3b8; stroke-width: 1.4; stroke-dasharray: 5 4; fill: none; marker-end: url(#arrowDash); }
+    .edge-label { font: 400 11px "Microsoft YaHei","PingFang SC","Noto Sans CJK SC",sans-serif; fill: #64748b; }
+    .legend { font: 400 12px "Microsoft YaHei","PingFang SC","Noto Sans CJK SC",sans-serif; fill: #475569; }
+  </style>
+
+  <rect class="bg" x="0" y="0" width="1280" height="880"/>
+
+  <text class="title" x="50" y="54">Lemon 语言架构</text>
+  <text class="subtitle" x="50" y="80">TypeScript 实现 · 词法 → 语法 → 静态检查 → 树遍历求值 · 交付 CLI / lemon.exe / VS Code 扩展</text>
+
+  <!-- ============================ 输入 ============================ -->
+  <rect x="50" y="110" width="820" height="96" rx="14" fill="#eef4ff" stroke="#2563eb" stroke-width="1.5"/>
+  <text class="grouplabel" x="66" y="134" fill="#1d4ed8">输入</text>
+
+  <rect class="node" x="66" y="146" width="230" height="46" stroke="#2563eb"/>
+  <text class="nt" x="82" y="166">源文件 .lemon1</text>
+  <text class="nd" x="82" y="182">UTF-8 · 自动剥离 BOM · CRLF 归一化</text>
+
+  <rect class="node" x="316" y="146" width="230" height="46" stroke="#2563eb"/>
+  <text class="nt" x="332" y="166">REPL 输入</text>
+  <text class="nd" x="332" y="182">花括号续行 · 跨片段共享绑定</text>
+
+  <rect class="node" x="566" y="146" width="288" height="46" stroke="#2563eb"/>
+  <text class="nt" x="582" y="166">eval 代码片段</text>
+  <text class="nd" x="582" y="182">包装为 main()，报错行号回映射给用户</text>
+
+  <path class="edge" d="M181 192 L181 220 M431 192 L431 220 M710 192 L710 220 M181 220 L710 220 M181 220 L181 230"/>
+
+  <!-- ======================== 前端流水线 ======================== -->
+  <rect x="50" y="232" width="820" height="200" rx="14" fill="#ecfdf3" stroke="#16a34a" stroke-width="1.5"/>
+  <text class="grouplabel" x="66" y="256" fill="#15803d">前端流水线（单趟扫描，无回溯）</text>
+
+  <rect class="node" x="91" y="274" width="180" height="84" stroke="#16a34a"/>
+  <text class="nt" x="105" y="300">Lexer 词法分析</text>
+  <text class="nd" x="105" y="320">手写字符扫描，O(n)</text>
+  <text class="nd" x="105" y="338">裸文本 / 引号转义 / 注释</text>
+
+  <rect class="node" x="301" y="274" width="180" height="84" stroke="#16a34a"/>
+  <text class="nt" x="315" y="300">Parser 语法分析</text>
+  <text class="nd" x="315" y="320">递归下降，无回溯</text>
+  <text class="nd" x="315" y="338">ASI：换行断句，分号可选</text>
+
+  <rect class="node" x="511" y="274" width="140" height="84" stroke="#16a34a"/>
+  <text class="nt" x="525" y="300">AST</text>
+  <text class="nd" x="525" y="320">全部节点</text>
+  <text class="nd" x="525" y="338">携带 span</text>
+
+  <rect class="node" x="681" y="274" width="173" height="84" stroke="#b45309"/>
+  <text class="nt" x="695" y="300">Checker 静态检查</text>
+  <text class="nd" x="695" y="320">作用域解析</text>
+  <text class="nd" x="695" y="338">int / double / text</text>
+
+  <path class="edge" d="M271 316 L299 316"/>
+  <path class="edge" d="M481 316 L509 316"/>
+  <path class="edge" d="M651 316 L679 316"/>
+
+  <rect class="node" x="91" y="376" width="180" height="40" stroke="#86efac"/>
+  <text class="nd" x="105" y="401">Token 表 / 关键字表</text>
+
+  <rect class="node" x="511" y="376" width="140" height="40" stroke="#86efac"/>
+  <text class="nd" x="521" y="401">行列定位</text>
+
+  <rect class="node" x="681" y="376" width="173" height="40" stroke="#fcd34d"/>
+  <text class="nd" x="691" y="401">符号表 · 类型规则</text>
+
+  <path class="edge-dash" d="M181 358 L181 374"/>
+  <path class="edge-dash" d="M581 358 L581 374"/>
+  <path class="edge-dash" d="M767 358 L767 374"/>
+
+  <!-- ======================== 执行引擎 ======================== -->
+  <rect x="50" y="458" width="820" height="188" rx="14" fill="#fff7ed" stroke="#ea580c" stroke-width="1.5"/>
+  <text class="grouplabel" x="66" y="482" fill="#c2410c">执行引擎</text>
+
+  <rect x="66" y="486" width="500" height="146" rx="12" fill="#fffbf5" stroke="#fdba74" stroke-width="1.3" stroke-dasharray="5 4"/>
+  <text class="nd" x="80" y="506" style="fill:#c2410c">运行期支撑（共享只读）</text>
+
+  <rect class="node" x="80" y="516" width="152" height="52" stroke="#fb923c"/>
+  <text class="nt" x="92" y="538" style="font-size:13px">Env 环境链</text>
+  <text class="nd" x="92" y="555">Map + parent 指针</text>
+
+  <rect class="node" x="248" y="516" width="152" height="52" stroke="#fb923c"/>
+  <text class="nt" x="260" y="538" style="font-size:13px">Value 值系统</text>
+  <text class="nd" x="260" y="555">int / double / text</text>
+
+  <rect class="node" x="416" y="516" width="136" height="52" stroke="#fb923c"/>
+  <text class="nt" x="428" y="538" style="font-size:13px">Builtins</text>
+  <text class="nd" x="428" y="555">say(x) 输出换行</text>
+
+  <rect class="node" x="80" y="580" width="152" height="52" stroke="#fb923c"/>
+  <text class="nt" x="92" y="602" style="font-size:13px">递归防护</text>
+  <text class="nd" x="92" y="619">深度上限 200</text>
+
+  <rect class="node" x="248" y="580" width="152" height="52" stroke="#fb923c"/>
+  <text class="nt" x="260" y="602" style="font-size:13px">调用栈收集</text>
+  <text class="nd" x="260" y="619">只暴露 Lemon 层</text>
+
+  <rect class="node" x="416" y="580" width="136" height="52" stroke="#fb923c"/>
+  <text class="nt" x="428" y="602" style="font-size:13px">值语义</text>
+  <text class="nd" x="428" y="619">内建不改入参</text>
+
+  <rect class="node" x="596" y="486" width="258" height="146" stroke="#ea580c"/>
+  <text class="nt" x="612" y="512">Evaluator 树遍历求值</text>
+  <text class="nd" x="612" y="534">① 登记全部 def 与 main（函数提升）</text>
+  <text class="nd" x="612" y="554">② 顺序执行 __init__ 顶层语句</text>
+  <text class="nd" x="612" y="574">③ 调用 main()</text>
+  <text class="nd" x="612" y="598">int → double 隐式提升</text>
+  <text class="nd" x="612" y="618">运行期错误附 Lemon 层调用栈</text>
+
+  <path class="edge" d="M767 432 L767 484"/>
+  <path class="edge-dash" d="M566 566 L594 566"/>
+
+  <!-- ======================== 诊断与输出 ======================== -->
+  <rect class="node" x="66" y="672" width="500" height="52" stroke="#cbd5e1"/>
+  <text class="nt" x="80" y="694" style="font-size:13px">Errors 错误体系 + Diagnostics 三段式渲染</text>
+  <text class="nd" x="80" y="712">错误码 E01xx–E09xx + 中文说明 + 行列源码片段 + ^ 指示 + 修复提示</text>
+
+  <rect class="node" x="596" y="672" width="258" height="52" stroke="#0ea5e9"/>
+  <text class="nt" x="612" y="694" style="font-size:13px">stdout · 程序输出</text>
+  <text class="nd" x="612" y="712">只承载 say() 的内容</text>
+
+  <rect class="node" x="596" y="740" width="258" height="52" stroke="#dc2626"/>
+  <text class="nt" x="612" y="762" style="font-size:13px">stderr · 诊断</text>
+  <text class="nd" x="612" y="780">与程序输出严格分流</text>
+
+  <path class="edge" d="M725 632 L725 670"/>
+  <path class="edge" d="M316 724 L316 766 L594 766"/>
+
+  <!-- 诊断汇总：从流水线各阶段沿左侧走廊汇入 -->
+  <path class="edge-dash" d="M36 432 L36 698 L64 698"/>
+  <text class="edge-label" x="44" y="556" transform="rotate(-90 44 556)">词法 / 语法 / 静态检查 诊断汇总</text>
+
+  <!-- ======================== 交付形态 ======================== -->
+  <rect x="910" y="110" width="340" height="682" rx="14" fill="#f1f5f9" stroke="#475569" stroke-width="1.5"/>
+  <text class="grouplabel" x="926" y="134" fill="#334155">交付形态</text>
+
+  <rect class="node" x="926" y="150" width="308" height="58" stroke="#334155"/>
+  <text class="nt" x="942" y="172">CLI · lemon</text>
+  <text class="nd" x="942" y="192">run / check / eval / ast / tokens / repl</text>
+
+  <rect class="node" x="926" y="228" width="308" height="58" stroke="#334155"/>
+  <text class="nt" x="942" y="250">esbuild → dist/lemon.cjs</text>
+  <text class="nd" x="942" y="270">单文件 CJS，bin/lemon.js 与 SEA 共用</text>
+
+  <rect class="node" x="926" y="306" width="308" height="58" stroke="#334155"/>
+  <text class="nt" x="942" y="328">Node SEA → dist/lemon.exe</text>
+  <text class="nd" x="942" y="348">独立可执行，目标机器免装 Node</text>
+
+  <rect class="node" x="926" y="390" width="308" height="160" stroke="#334155"/>
+  <text class="nt" x="942" y="414">VS Code 扩展（.vsix）</text>
+  <text class="nd" x="942" y="436">· .lemon1 语法高亮 + 代码片段</text>
+  <text class="nd" x="942" y="456">· 括号 / 引号配对，注释快捷切换</text>
+  <text class="nd" x="942" y="476">· 诊断 Provider（输入防抖）</text>
+  <text class="nd" x="942" y="496">· 运行当前文件 / 打开 REPL</text>
+  <text class="nd" x="942" y="522">扩展不复制解释器逻辑，直接复用 CLI</text>
+
+  <rect class="node" x="926" y="580" width="308" height="58" stroke="#334155"/>
+  <text class="nt" x="942" y="602">check --json --stdin</text>
+  <text class="nd" x="942" y="622">未保存内容也能实时诊断（唯一事实来源）</text>
+
+  <rect class="node" x="926" y="662" width="308" height="106" stroke="#334155"/>
+  <text class="nt" x="942" y="686">npm 脚本</text>
+  <text class="nd" x="942" y="708">build · exe · test · ext:package</text>
+  <text class="nd" x="942" y="728">测试：126+ 用例</text>
+  <text class="nd" x="942" y="748">（单元 / 黄金用例 / 分发产物端到端）</text>
+
+  <path class="edge" d="M1080 208 L1080 226"/>
+  <path class="edge" d="M1080 286 L1080 304"/>
+  <path class="edge" d="M1080 550 L1080 578"/>
+  <path class="edge" d="M926 160 L876 160"/>
+  <path class="edge-dash" d="M926 609 L890 609 L890 195 L924 195"/>
+  <text class="edge-label" x="896" y="330" transform="rotate(-90 896 330)">扩展调用 CLI</text>
+
+  <!-- ============================ 图例 ============================ -->
+  <rect x="50" y="806" width="820" height="52" rx="12" fill="#ffffff" stroke="#cbd5e1"/>
+  <text class="legend" x="68" y="838">图例：</text>
+  <path class="edge" d="M112 832 L152 832"/>
+  <text class="legend" x="160" y="838">主数据流与控制流</text>
+  <path class="edge-dash" d="M300 832 L340 832"/>
+  <text class="legend" x="348" y="838">支撑 / 调用关系</text>
+  <rect x="500" y="822" width="14" height="14" rx="3" fill="#eef4ff" stroke="#2563eb"/>
+  <text class="legend" x="522" y="838">输入</text>
+  <rect x="572" y="822" width="14" height="14" rx="3" fill="#ecfdf3" stroke="#16a34a"/>
+  <text class="legend" x="594" y="838">前端流水线</text>
+  <rect x="694" y="822" width="14" height="14" rx="3" fill="#fff7ed" stroke="#ea580c"/>
+  <text class="legend" x="716" y="838">执行引擎</text>
+  <rect x="796" y="822" width="14" height="14" rx="3" fill="#f1f5f9" stroke="#475569"/>
+  <text class="legend" x="818" y="838">交付</text>
+</svg>

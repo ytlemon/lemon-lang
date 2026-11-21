@@ -1,0 +1,23 @@
+// 比较运算：六个运算符的结果都是 bool；int 与 double 按数值比较
+__init__ {
+    int a = 7
+    double b = 7.0
+    text name = Lemon
+
+    main() {
+        say(a == 7)
+        say(a == b)
+        say(a != 7)
+        say(a < 8)
+        say(a <= 7)
+        say(a > 7)
+        say(a >= 7)
+        say(name == Lemon)
+        say(name != Lemon)
+        say(true == true)
+
+        bool 够大 = a > 5
+        say(够大)
+        say(!够大)
+    }
+}

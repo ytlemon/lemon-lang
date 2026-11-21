@@ -1,0 +1,5 @@
+// 反例：有 __init__ 但没有 main
+__init__ {
+    int a = 1
+    say(a)
+}

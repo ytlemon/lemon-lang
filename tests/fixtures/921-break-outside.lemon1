@@ -1,0 +1,6 @@
+// 反例：break 写在 cycle 之外
+__init__ {
+    main() {
+        break
+    }
+}

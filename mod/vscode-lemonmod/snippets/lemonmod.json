@@ -1,0 +1,41 @@
+{
+  "lemonmod 程序骨架": {
+    "prefix": ["file", "shell", "set"],
+    "body": [
+      "set ${1:文件名} public{    //声明文件",
+      "    class public{       //初始化",
+      "        ${2:say(hello)}",
+      "    }",
+      "}"
+    ],
+    "description": "创建必需的 set / class 文件外壳"
+  },
+  "say 输出": {
+    "prefix": ["say"],
+    "body": ["say(${1:hello})"],
+    "description": "输出一个值并换行（裸文本不加引号）"
+  },
+  "printf 输出": {
+    "prefix": ["printf"],
+    "body": ["printf(\"${1:hello}\")"],
+    "description": "输出一个字符串并换行（与 say 等价）"
+  },
+  "mod1 构建清单": {
+    "prefix": ["mod1", "build", "bulid"],
+    "body": [
+      "class mod to build {          //构建清单（文件后缀 .mod1）",
+      "    mod file() {              //要打包的 mod 源文件",
+      "        ${1:mod.lemon2}",
+      "    }",
+      "    build {                   //构建",
+      "        become ${2:mod.lemonmod}   //产物",
+      "    }",
+      "    wait for build()          //等待编译完成",
+      "    if build == true {",
+      "        printf(\"打包完成\")",
+      "    }",
+      "}"
+    ],
+    "description": "创建 .mod1 构建清单（class mod to build）"
+  }
+}

@@ -1,0 +1,22 @@
+// 逻辑运算：&& 与 || 短路求值，! 取反
+__init__ {
+    bool t = true
+    bool f = false
+    int zero = 1 - 1
+
+    main() {
+        say(t && true)
+        say(t && f)
+        say(f || true)
+        say(f || f)
+        say(!t)
+        say(!!t)
+        say(!(t && f) || f)
+
+        // 短路：右侧的 1 / zero 根本不会被求值，所以不会报除零
+        say(t || 1 / zero > 0)
+        say(f && 1 / zero > 0)
+
+        say(1 > 0 && 2 > 1)
+    }
+}

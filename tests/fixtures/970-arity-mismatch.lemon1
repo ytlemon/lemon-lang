@@ -1,0 +1,10 @@
+// 反例：函数参数个数不符
+__init__ {
+    def greet(a, b) {
+        say(a)
+    }
+
+    main() {
+        greet(1)
+    }
+}

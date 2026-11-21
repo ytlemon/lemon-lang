@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>websets</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; padding: 40px 16px;
+    display: grid; place-items: center;
+    background: radial-gradient(120% 120% at 50% 0%, #1e293b 0%, #0b1120 55%, #05070f 100%);
+    color: #e2e8f0;
+    font-family: system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+  }
+  main { width: 100%; max-width: 640px; text-align: center; }
+  h1 { margin: 0 0 4px; font-size: 20px; font-weight: 600; letter-spacing: .02em; }
+  p.sub { margin: 0 0 24px; color: #7c8aa3; font-size: 13px; }
+  nav { display: grid; gap: 12px; }
+  .stage {
+    position: relative; margin: 0 auto;
+    border: 1px dashed rgba(148,163,184,.24); border-radius: 12px;
+    overflow: hidden;
+  }
+  a.button {
+    display: block; padding: 16px 20px; border-radius: 14px;
+    text-decoration: none; color: #f8fafc; font-size: 15px; font-weight: 500;
+    word-break: break-all;
+    background: linear-gradient(180deg, rgba(148,163,184,.16), rgba(148,163,184,.06));
+    border: 1px solid rgba(148,163,184,.28);
+    box-shadow: 0 1px 0 rgba(255,255,255,.06) inset, 0 8px 24px -12px rgba(0,0,0,.8);
+    transition: transform .15s ease, border-color .15s ease, background .15s ease;
+  }
+  a.button:hover {
+    transform: translateY(-2px);
+    border-color: rgba(96,165,250,.65);
+    background: linear-gradient(180deg, rgba(96,165,250,.22), rgba(96,165,250,.08));
+  }
+  a.button:active { transform: translateY(0); }
+  div.box {
+    position: absolute; border-radius: 10px;
+    border: 1px solid rgba(148,163,184,.28);
+    display: grid; align-content: center; justify-items: center; gap: 6px;
+    padding: 6px; overflow: auto; text-align: center;
+  }
+  div.panel {
+    border-radius: 10px; border: 1px solid rgba(148,163,184,.22);
+    padding: 12px; display: grid; gap: 8px;
+  }
+  span.text { display: block; }
+  p.empty { color: #7c8aa3; font-size: 14px; line-height: 1.7; }
+  footer { margin-top: 24px; color: #55637a; font-size: 12px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>websets</h1>
+  <p class="sub">3 个按钮 · 2 个 div</p>
+  <nav>
+    <div class="stage" style="width:240px;height:120px">
+        <a class="button" href="http://localhost:9000">localhost:9000</a>
+        <a class="button" href="https://example.com">https://example.com</a>
+        <div class="box" style="left:16px;top:16px;width:224px;height:104px;background:#1f6feb">
+          <span class="text">一块蓝色面板</span>
+          <div class="box" style="left:8px;top:8px;width:92px;height:32px;background:#ffffff">
+            <span class="text">嵌在里面的白块</span>
+          </div>
+          <a class="button" href="https://example.com/inside">https://example.com/inside</a>
+        </div>
+    </div>
+  </nav>
+  <footer>由 Lemon 生成 · websets()</footer>
+</main>
+</body>
+</html>

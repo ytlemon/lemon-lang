@@ -1,0 +1,48 @@
+// cycle 循环：cycle(N) 重复 N 次，cycle() 就是 while true
+__init__ {
+    // 1) cycle(N)：i 从 0 递增到 N-1，可以直接参与运算
+    def 倒数(次数) {
+        cycle(次数) {
+            say(次数 - i)
+        }
+    }
+
+    main() {
+        倒数(3)
+
+        // 2) 配合 if + break，相当于"最多试 N 次，满足条件就提前收工"
+        cycle(5) {
+            if i * i > 10 {
+                break
+            }
+            say(i)
+        }
+
+        // 3) cycle() 没有次数：无限循环，只能靠 break 结束
+        cycle() {
+            if i >= 2 {
+                break
+            }
+            say(i)
+        }
+
+        // 4) 循环体每轮都是新作用域；i 会遮蔽外层的同名变量
+        int i = 99
+        cycle(2) {
+            int 平方 = i * i
+            say(平方)
+        }
+        say(i)
+
+        // 5) 嵌套循环：内层的 break 只跳出内层
+        cycle(2) {
+            cycle(3) {
+                if i == 2 {
+                    break
+                }
+                say(i)
+            }
+            say("下一轮")
+        }
+    }
+}

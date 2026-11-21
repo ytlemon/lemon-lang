@@ -1,0 +1,41 @@
+// 键盘输入：必须在**真实终端**里运行（管道、重定向、编辑器里都会报 E0410）
+//   lemon run examples/keyboard.lemon1
+//
+// keyboard(键) 非阻塞：这个键自上次读取后有没有被按过（读过就清零）
+// waitKey(键)  阻塞：停在这一行，直到该键被按下
+//
+// 注意：不加 sleep 的话 cycle() 是满速空转，会占满一个 CPU 核心；
+//       这里每轮歇 20 毫秒（约 50 帧/秒），按 q 退出。
+__init__ {
+    def 演示() {
+        // 文本里有空格，必须加引号（裸文本不含空白）
+        say("按 w 前进，按 ↑ 向上，按 q 退出")
+
+        cycle() {
+            if keyboard(q) {
+                break
+            }
+            if keyboard(w) {
+                say("前进")
+            }
+            if keyboard(up) {
+                say("向上")
+            }
+            sleep(20ms)
+        }
+
+        say("循环结束")
+    }
+
+    main() {
+        演示()
+
+        // 阻塞等待：适合"按任意键继续"这种固定流程
+        say("按空格继续……")
+        waitKey(space)
+        say("继续了")
+
+        // 键名不认识会在运行前就报错，不会静默变成"怎么按都没反应"
+        // say(keyboard(ww))     // ❌ E0321：keyboard 不认识键名「ww」
+    }
+}

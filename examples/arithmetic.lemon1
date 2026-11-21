@@ -1,0 +1,50 @@
+// 基础运算：+ - * /、括号、int 与 double 的提升、文本拼接
+__init__ {
+    int a = 7
+    int b = 2
+    double price = 12.5
+    text name = Lemon
+
+    def twice(x) {
+        say(x * 2)
+    }
+
+    main() {
+        // 优先级：* / 高于 + -，同级左结合
+        say(1 + 2 * 3)
+        say((1 + 2) * 3)
+        say(10 - 2 - 3)
+
+        // int / int 向零截断（类 C）
+        say(a / b)
+        say(0 - a / b)
+
+        // 一元正负号：- 取负，+ 是数值恒等
+        say(-a)
+        say(-price)
+        say(-(a - b))
+        say(-a * b)
+        say(+a)
+        say(1 + +b)
+
+        // 乘方：优先级最高且右结合
+        say(2 ** 10)
+        say(2 ** 3 ** 2)
+        say(2.0 ** 0.5)
+        say(b ** 2)
+        say(2 * b ** 2)
+
+        // 只要有一侧是 double，结果就是 double
+        say(price / 4)
+        say(a * 1.0)
+
+        // 运算结果可以存变量、做实参
+        int total = a * b + 1
+        say(total)
+        twice(a + b)
+
+        // '+' 也能拼接文本
+        say(你好 + ， + 世界)
+        say(name + 语言)
+    }
+}

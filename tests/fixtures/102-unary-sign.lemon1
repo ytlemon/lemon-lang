@@ -1,0 +1,22 @@
+// 一元正负号
+__init__ {
+    int a = 5
+    double price = 2.5
+
+    main() {
+        say(-1)
+        say(-2.5)
+        say(-a)
+        say(-price)
+        say(-a * 2)
+        say(8 / -2)
+        say(-(a + 1))
+        say(1 - -1)
+        say(- -3)
+
+        say(+a)
+        say(+price)
+        say(1 + +a)
+        say(- +a)
+    }
+}

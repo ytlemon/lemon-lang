@@ -1,0 +1,19 @@
+// 乘方运算 **
+__init__ {
+    int base = 2
+    int exp = 10
+
+    main() {
+        say(2 ** 10)
+        say(2 ** 3 ** 2)
+        say(base ** exp)
+        say(2 ** 0)
+        say(2.0 ** 0.5)
+        say(2 ** 0.5)
+        say(2.0 ** 3)
+        say(2.0 ** -1)
+        say(-2 ** 2)
+        say((0 - 2) ** 2)
+        say(2 * 3 ** 2)
+    }
+}

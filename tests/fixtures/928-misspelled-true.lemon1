@@ -1,0 +1,8 @@
+// 静态检查：把 bool 字面量写成 True（反例）
+__init__ {
+    main() {
+        if keyboard(w) == True {
+            say("按下")
+        }
+    }
+}

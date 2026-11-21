@@ -1,0 +1,21 @@
+// 分支体各自是独立作用域：外层变量可见，分支内的声明不影响外面
+__init__ {
+    text 标签 = 内部
+
+    def 判断(flag) {
+        int 计数 = 10
+        if flag {
+            int 计数 = 20
+            say(标签)
+            say(计数)
+        } else {
+            say(计数)
+        }
+        say(计数)
+    }
+
+    main() {
+        判断(true)
+        判断(false)
+    }
+}

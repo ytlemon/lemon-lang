@@ -1,0 +1,23 @@
+// try / catch：捕获运行期错误并读取错误值的字段
+__init__ {
+    int zero = 1 - 1
+
+    def risky() {
+        say("进入函数")
+        say(7 / zero)
+        say("这一行不会执行")
+    }
+
+    main() {
+        try {
+            say("开始")
+            risky()
+        } catch (错误) {
+            say(错误)
+            say(错误.code)
+            say(错误.line)
+            say(错误.message)
+        }
+        say("继续执行")
+    }
+}

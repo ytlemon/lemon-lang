@@ -1,0 +1,18 @@
+// 能力模块：#incloud <模块名> 启用一组内置函数（不产生任何源码）
+// 当前可用模块：web —— 打开浏览器、抓取网页正文
+#incloud web
+
+__init__ {
+    main() {
+        // 网址必须加引号：: 不是 Lemon 的语法符号
+        try {
+            text 正文 = fetchText("https://example.com")
+            say(正文)
+        } catch (错误) {
+            say(抓取失败：+ 错误.message)
+        }
+
+        // openUrl 会真的弹出浏览器窗口，想试就取消下一行的注释
+        // openUrl("https://example.com")
+    }
+}

@@ -1,0 +1,96 @@
+{
+  "name": "lemonmod-language",
+  "displayName": "Lemonmod Language",
+  "description": "lemonmod 编程语言（.lemon2 运行文件 / .mod1 构建清单）的语法高亮、代码片段与实时语法诊断",
+  "version": "0.1.4",
+  "publisher": "lemon-lang",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.85.0",
+    "node": ">=18"
+  },
+  "categories": [
+    "Programming Languages",
+    "Linters"
+  ],
+  "keywords": [
+    "lemonmod",
+    "lemon",
+    "lemon2",
+    "编程语言"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "lemonmod",
+        "aliases": [
+          "Lemonmod",
+          "lemonmod"
+        ],
+        "extensions": [
+          ".lemon2",
+          ".mod1"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "lemonmod",
+        "scopeName": "source.lemonmod",
+        "path": "./syntaxes/lemonmod.tmLanguage.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "lemonmod",
+        "path": "./snippets/lemonmod.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "lemonmod.checkFile",
+        "title": "检查当前文件",
+        "category": "Lemonmod",
+        "icon": "$(check)"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "lemonmod.checkFile",
+          "when": "resourceLangId == lemonmod",
+          "group": "navigation@2"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "lemonmod.checkFile",
+          "when": "resourceLangId == lemonmod",
+          "group": "navigation@2"
+        }
+      ]
+    },
+    "keybindings": [],
+    "configuration": {
+      "title": "Lemonmod",
+      "properties": {
+        "lemonmod.diagnostics.enable": {
+          "type": "boolean",
+          "default": true,
+          "description": "在打开、编辑与保存 .lemon2 / .mod1 文件时自动做语法检查。"
+        },
+        "lemonmod.diagnostics.debounceMs": {
+          "type": "number",
+          "default": 300,
+          "minimum": 0,
+          "description": "自动检查的防抖延迟（毫秒）。"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "node ../../scripts/build-mod-extension.mjs"
+  }
+}

@@ -1,0 +1,211 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Lemon",
+  "scopeName": "source.lemon",
+  "patterns": [
+    { "include": "#comments" },
+    { "include": "#colors" },
+    { "include": "#directives" },
+    { "include": "#websets" },
+    { "include": "#strings" },
+    { "include": "#entry" },
+    { "include": "#keywords" },
+    { "include": "#types" },
+    { "include": "#builtins" },
+    { "include": "#operators" },
+    { "include": "#numbers" },
+    { "include": "#identifiers" }
+  ],
+  "repository": {
+    "colors": {
+      "patterns": [
+        {
+          "name": "constant.other.color.rgb-value.lemon",
+          "match": "#(?:[0-9a-fA-F]{6}|[0-9a-fA-F]{3})(?![0-9a-zA-Z_])"
+        }
+      ]
+    },
+    "websets": {
+      "patterns": [
+        {
+          "name": "keyword.control.websets.lemon",
+          "match": "\\bwebsets\\b(?=\\s*\\()"
+        },
+        {
+          "name": "keyword.control.websets.lemon",
+          "match": "\\bweb\\b(?=\\s*\\.\\s*init\\s*\\()"
+        },
+        {
+          "name": "keyword.other.element.lemon",
+          "match": "\\bbutton\\b(?=\\s*\\{)"
+        },
+        {
+          "name": "keyword.other.element.lemon",
+          "match": "\\bdiv\\b(?=\\s*[({])"
+        },
+        {
+          "name": "keyword.other.property.lemon",
+          "match": "\\bin\\b(?=\\s*\\()"
+        },
+        {
+          "name": "keyword.other.property.lemon",
+          "match": "\\bcolor\\b(?=\\s*=)"
+        },
+        {
+          "name": "keyword.other.element.lemon",
+          "match": "\\bto\\b(?=\\s*[\"\\p{L}])"
+        }
+      ]
+    },
+    "directives": {
+      "patterns": [
+        {
+          "name": "meta.preprocessor.lemon",
+          "match": "^\\s*(#incloud)\\b\\s*(.*?)\\s*(//.*)?$",
+          "captures": {
+            "1": { "name": "keyword.control.import.lemon" },
+            "2": { "name": "string.unquoted.lemon" },
+            "3": { "name": "comment.line.double-slash.lemon" }
+          }
+        },
+        {
+          "name": "invalid.illegal.directive.lemon",
+          "match": "^\\s*#(?!incloud\\b)(?!(?:[0-9a-fA-F]{6}|[0-9a-fA-F]{3})(?![0-9a-zA-Z_]))\\S*"
+        }
+      ]
+    },
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.double-slash.lemon",
+          "match": "//.*$"
+        },
+        {
+          "name": "comment.block.lemon",
+          "begin": "/\\*",
+          "end": "\\*/",
+          "patterns": [{ "include": "#comments" }]
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.lemon",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            {
+              "name": "constant.character.escape.unicode.lemon",
+              "match": "\\\\u\\{[0-9a-fA-F]{1,6}\\}"
+            },
+            {
+              "name": "constant.character.escape.lemon",
+              "match": "\\\\."
+            }
+          ]
+        }
+      ]
+    },
+    "entry": {
+      "patterns": [
+        {
+          "name": "entity.name.function.lemon",
+          "match": "(?<=\\bdef\\s+)[\\p{L}\\p{Nl}_][\\p{L}\\p{N}_]*"
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.lemon",
+          "match": "\\b__init__\\b|\\bdef\\b|\\btry\\b|\\bcatch\\b"
+        },
+        {
+          "name": "keyword.control.conditional.lemon",
+          "match": "\\bif\\b|\\belif\\b|\\belse\\b"
+        },
+        {
+          "name": "keyword.control.loop.lemon",
+          "match": "\\bcycle\\b|\\bbreak\\b"
+        },
+        {
+          "name": "keyword.other.entry.lemon",
+          "match": "\\bmain\\b(?=\\s*\\()"
+        },
+        {
+          "name": "constant.language.boolean.lemon",
+          "match": "\\b(true|false)\\b"
+        },
+        {
+          "name": "invalid.illegal.reserved.lemon",
+          "match": "\\b(while|for|return|continue)\\b"
+        }
+      ]
+    },
+    "types": {
+      "patterns": [
+        {
+          "name": "storage.type.lemon",
+          "match": "\\b(int|double|text|bool)\\b"
+        }
+      ]
+    },
+    "builtins": {
+      "patterns": [
+        {
+          "name": "support.function.builtin.lemon",
+          "match": "\\b(say|keyboard|waitKey|sleep)\\b(?=\\s*\\()"
+        },
+        {
+          "name": "support.function.module.lemon",
+          "match": "\\b(openUrl|fetchText)\\b(?=\\s*\\()"
+        }
+      ]
+    },
+    "operators": {
+      "patterns": [
+        {
+          "name": "keyword.operator.power.lemon",
+          "match": "\\*\\*"
+        },
+        {
+          "name": "keyword.operator.comparison.lemon",
+          "match": "==|!=|<=|>=|<|>"
+        },
+        {
+          "name": "keyword.operator.logical.lemon",
+          "match": "&&|\\|\\||!(?!=)"
+        },
+        {
+          "name": "keyword.operator.arithmetic.lemon",
+          "match": "[+\\-*/]"
+        },
+        {
+          "name": "keyword.operator.assignment.lemon",
+          "match": "=(?!=)"
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.duration.lemon",
+          "match": "(?i)\\b\\d+(\\.\\d+)?(ms|min|s|h)\\b"
+        },
+        {
+          "name": "constant.numeric.lemon",
+          "match": "\\b\\d+(\\.\\d+)?([eE][+-]?\\d+)?\\b"
+        }
+      ]
+    },
+    "identifiers": {
+      "patterns": [
+        {
+          "name": "variable.other.lemon",
+          "match": "[\\p{L}\\p{Nl}_][\\p{L}\\p{N}_]*"
+        }
+      ]
+    }
+  }
+}

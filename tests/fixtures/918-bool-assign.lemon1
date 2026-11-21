@@ -1,0 +1,7 @@
+// 静态检查：bool 不能存进 int 变量（反例）
+__init__ {
+    main() {
+        int a = true
+        say(a)
+    }
+}

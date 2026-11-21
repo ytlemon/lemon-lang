@@ -1,0 +1,8 @@
+// 反例：try 后面没有 catch
+__init__ {
+    main() {
+        try {
+            say(1)
+        }
+    }
+}

@@ -1,0 +1,11 @@
+// 全篇不写分号，纯靠换行断句
+__init__ {
+    int a = 1
+    double b = 2.5
+
+    main() {
+        say(a)
+        say(b)
+        say("收尾")
+    }
+}

@@ -1,0 +1,107 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Lemonmod",
+  "scopeName": "source.lemonmod",
+  "patterns": [
+    { "include": "#comments" },
+    { "include": "#shell" },
+    { "include": "#build" },
+    { "include": "#output" },
+    { "include": "#strings" },
+    { "include": "#words" },
+    { "include": "#punctuation" }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.double-slash.lemonmod",
+          "match": "//.*$"
+        }
+      ]
+    },
+    "shell": {
+      "patterns": [
+        {
+          "name": "storage.type.file.lemonmod",
+          "match": "\\bset\\b"
+        },
+        {
+          "name": "keyword.declaration.class.lemonmod",
+          "match": "\\bclass\\b"
+        },
+        {
+          "name": "storage.modifier.access.lemonmod",
+          "match": "\\bpublic\\b"
+        }
+      ]
+    },
+    "output": {
+      "patterns": [
+        {
+          "name": "support.function.builtin.lemonmod",
+          "match": "\\b(?:say|printf)\\b(?=\\s*\\()"
+        }
+      ]
+    },
+    "build": {
+      "patterns": [
+        {
+          "name": "constant.language.boolean.lemonmod",
+          "match": "\\b(?:true|false)\\b"
+        },
+        {
+          "name": "keyword.control.build.lemonmod",
+          "match": "\\b(?:wait|for|build|bulid|become|to)\\b"
+        },
+        {
+          "name": "storage.type.mod.lemonmod",
+          "match": "\\bmod\\b"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.lemonmod",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            {
+              "name": "constant.character.escape.lemonmod",
+              "match": "\\\\[ntr\"'\\\\]"
+            },
+            {
+              "name": "invalid.illegal.escape.lemonmod",
+              "match": "\\\\."
+            }
+          ]
+        }
+      ]
+    },
+    "words": {
+      "patterns": [
+        {
+          "name": "variable.other.text.lemonmod",
+          "match": "[\\p{L}\\p{N}_]+"
+        }
+      ]
+    },
+    "punctuation": {
+      "patterns": [
+        {
+          "name": "punctuation.section.block.lemonmod",
+          "match": "[{}]"
+        },
+        {
+          "name": "punctuation.section.parens.lemonmod",
+          "match": "[()]"
+        },
+        {
+          "name": "punctuation.separator.lemonmod",
+          "match": "[,;]"
+        }
+      ]
+    }
+  }
+}

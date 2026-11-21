@@ -1,0 +1,14 @@
+// 三种类型：int / double / text
+__init__ {
+    int count = 3
+    double price = 12.5
+    double promoted = 2
+    text label = 苹果
+
+    main() {
+        say(count)
+        say(price)
+        say(promoted)
+        say(label)
+    }
+}
