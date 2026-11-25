@@ -132,6 +132,11 @@ function printStmt(stmt: Stmt, prefix: string, last: boolean, lines: string[]): 
       });
       return;
     }
+    case 'BuildExe': {
+      lines.push(`${prefix}${branch}BuildExe`);
+      printExpr(stmt.filename, next, true, lines);
+      return;
+    }
     case 'Assign': {
       lines.push(`${prefix}${branch}Assign ${stmt.target.name}.${stmt.property} =`);
       printExpr(stmt.value, next, true, lines);

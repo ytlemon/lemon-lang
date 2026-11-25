@@ -1,4 +1,4 @@
-# Lemon 语言规范 v1.0.0
+# Lemon 语言规范 v1.0.1
 
 本文档描述 Lemon 的完整语法与语义。所有内容与 `src/lang/` 下的实现一一对应，
 测试用例（`tests/`、`tests/fixtures/`）即为本文档的可执行版本。

@@ -79,6 +79,10 @@ export const ErrorCodes = {
   FILESKILL_PATH: 'E0347',
   /** div 的属性（in / color）写得不对：名字不认识、重复、缺分隔等 */
   WEBSETS_PROPS: 'E0348',
+  /** buildexe 缺少可打包的 websets() / game() 页面 */
+  BUILD_MODULE: 'E0349',
+  /** buildexe 右侧的文件名不是 text */
+  BUILD_FILENAME: 'E0350',
 
   /* ---------- 运行期 E04xx ---------- */
   UNDEFINED_VAR: 'E0401',

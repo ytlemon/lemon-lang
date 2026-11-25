@@ -5,6 +5,7 @@
  * 输出契约：程序输出走 stdout，诊断与错误走 stderr；
  * `check --json` 保证 stdout 上只有一份合法 JSON，供编辑器插件稳定解析。
  */
+import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import readline from 'node:readline';
@@ -77,6 +78,7 @@ const FLAGS = [
   '--warn-unused',
   '--no-color',
   '--no-open',
+  '--no-exe',
   '--stdin',
   '--help',
   '-h',
@@ -246,6 +248,12 @@ ${helpRow('#incloud "工具.lemon1"', '路径加引号也行；直接写 工具 
   }
   运行状态：game.running / game.quit（bool），可写 game.running = true（唯一允许的重新赋值）
 
+打包 exe（buildexe，需要 websets() 或 game() 任一界面）：
+  buildexe = 我的游戏          // 顶层声明，右侧是文件名（裸文本或引号字符串）
+  内置 bool 变量 build：写了 buildexe 就为 true，否则为 false
+  if build == true { ... }     // 也兼容 if build = true
+  main() 跑完后把 .html 打包成同名 .exe；加 --no-exe 只生成页面不打包
+
 类（class，需要 #incloud class）：
   class 与 main() 同级，把字段与方法打包成一个类；用 类名(值...) 按字段顺序构造
   class 学生 {
@@ -286,20 +294,22 @@ export async function main(argv: string[], io: CliIo = defaultIo()): Promise<num
   const checkOptions: CheckOptions = { warnUnused: parsed.flags.has('--warn-unused') };
   // websets() 生成的页面默认会用浏览器打开；--no-open 只落盘，脚本与 CI 用得上
   const openBrowser = !parsed.flags.has('--no-open');
+  // buildexe 默认执行；--no-exe 只生成 .html，便于脚本/CI 里跳过耗时打包
+  const buildExe = !parsed.flags.has('--no-exe');
 
   switch (parsed.command) {
     case null:
       // `lemon foo.lemon1` 简写为 run
       if (parsed.positionals.length === 0) return runRepl(io, checkOptions);
       if (parsed.positionals.length === 1) {
-        return runFile(io, parsed.positionals[0], checkOptions, openBrowser);
+        return runFile(io, parsed.positionals[0], checkOptions, openBrowser, buildExe);
       }
       return usageError(io, `无法同时运行多个文件：${parsed.positionals.join(' ')}`);
     case 'repl':
       return runRepl(io, checkOptions);
     case 'run': {
       if (parsed.positionals.length !== 1) return usageError(io, 'run 需要且仅需要一个文件路径');
-      return runFile(io, parsed.positionals[0], checkOptions, openBrowser);
+      return runFile(io, parsed.positionals[0], checkOptions, openBrowser, buildExe);
     }
     case 'check': {
       const json = parsed.flags.has('--json');
@@ -393,7 +403,13 @@ function runWithKeyboard<T>(io: CliIo, run: (keyboard: KeyboardSource) => T): T 
   }
 }
 
-function runFile(io: CliIo, file: string, checkOptions: CheckOptions, openBrowser: boolean): number {
+function runFile(
+  io: CliIo,
+  file: string,
+  checkOptions: CheckOptions,
+  openBrowser: boolean,
+  buildExe: boolean,
+): number {
   if (isModFile(file)) return runModFile(io, file);
   const loaded = loadFile(io, file);
   if (loaded === null) return EXIT_USAGE;
@@ -419,6 +435,17 @@ function runFile(io: CliIo, file: string, checkOptions: CheckOptions, openBrowse
   if (result.ok && result.page !== null) writePage(io, file, result.page, openBrowser);
   // game() 的产出：落到 <入口名>.game.html，并按需用浏览器打开
   if (result.ok && result.game !== null) writeGame(io, file, result.game, openBrowser);
+
+  // buildexe：用刚落盘的页面（game 优先，其次 websets）生成独立 exe
+  if (result.ok && result.buildExe !== null) {
+    const htmlFile =
+      result.game !== null
+        ? `${file.replace(/\.lemon1$/i, '')}.game.html`
+        : result.page !== null
+          ? `${file.replace(/\.lemon1$/i, '')}.html`
+          : null;
+    if (htmlFile !== null) writeExe(io, htmlFile, result.buildExe, buildExe, file);
+  }
 
   if (result.ok) {
     if (result.diagnostics.length > 0) {
@@ -709,6 +736,47 @@ function writeGame(io: CliIo, entry: string, game: GameWindow, openBrowser: bool
 }
 
 /** 引入失败：错误可能发生在被引入的文件里，所以渲染要认 error.source */
+/**
+ * buildexe 的产出落地：把 web/game 页面打包成独立 .exe。
+ * 打包是子进程，失败只提示、不改退出码（与 writePage / writeGame 一致）。
+ */
+function writeExe(
+  io: CliIo,
+  htmlFile: string,
+  target: string,
+  enabled: boolean,
+  entry: string,
+): void {
+  if (!enabled) return;
+  const name = target.trim();
+  if (name === '') {
+    io.stderr('buildexe 的文件名为空，已跳过打包\n');
+    return;
+  }
+  if (!fs.existsSync(htmlFile)) {
+    io.stderr(`找不到可打包的页面 ${htmlFile}，已跳过打包\n`);
+    return;
+  }
+  const exeName = /\.exe$/i.test(name) ? name : `${name}.exe`;
+  const exePath = path.resolve(path.dirname(path.resolve(entry)), exeName);
+  const root = path.resolve(__dirname, '..');
+  const script = path.join(root, 'scripts', 'bundle-html-exe.mjs');
+  if (!fs.existsSync(script)) {
+    io.stderr(`找不到打包脚本 ${script}，已跳过打包\n`);
+    return;
+  }
+  const title = path.basename(exeName, '.exe');
+  const result = spawnSync(process.execPath, [script, htmlFile, exePath, title], {
+    cwd: root,
+    encoding: 'utf8',
+  });
+  if (result.status !== 0) {
+    io.stderr(`打包 exe 失败：${String(result.stderr ?? result.stdout ?? '').trim()}\n`);
+    return;
+  }
+  io.stdout(`已生成 exe ${exePath}\n`);
+}
+
 function reportIncludeFailure(io: CliIo, failure: { error: LemonError; source: SourceFile }): number {
   io.stderr(`${renderLemonError(failure.error, failure.source, failure.source.path, { color: io.color })}\n`);
   return EXIT_LANGUAGE_ERROR;

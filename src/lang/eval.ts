@@ -238,6 +238,8 @@ export class Evaluator {
   private game: GameWindow | null = null;
   /** game 命名空间的运行状态，供 game.running / game.quit 读写 */
   private gameState = { running: false, quit: false };
+  /** buildexe 声明求出的 exe 文件名；没有声明时为 null */
+  private exeTargetName: string | null = null;
   /** fileskill：当前 cd 到的目录（绝对路径）栈；空表示不在任何 cd 块里 */
   private readonly dirStack: string[] = [];
   /** 类名 → 声明；构造与成员/方法访问都靠它 */
@@ -264,6 +266,11 @@ export class Evaluator {
    */
   get gameWindow(): GameWindow | null {
     return this.game;
+  }
+
+  /** 本次运行 buildexe 声明求出的 exe 文件名；没有声明时恒为 null */
+  get exeTarget(): string | null {
+    return this.exeTargetName;
   }
 
   /* ------------------------------ 对外 API ------------------------------ */
@@ -394,6 +401,21 @@ export class Evaluator {
         this.evalFileSave(stmt, env);
         return null;
       }
+      case 'BuildExe': {
+        const value = this.evalExpr(stmt.filename, env);
+        if (value.kind !== 'text') {
+          throw new LemonError({
+            code: ErrorCodes.RUNTIME_TYPE,
+            phase: 'runtime',
+            message: `buildexe 的文件名必须是 text，实际是 ${value.kind}`,
+            span: stmt.filename.span,
+            hint: '这通常意味着静态检查存在漏洞，请提交一份最小复现',
+            frames: [...this.frames],
+          });
+        }
+        this.exeTargetName = value.value;
+        return null;
+      }
       case 'Assign':
         this.evalAssign(stmt, env);
         return null;
@@ -423,8 +445,12 @@ export class Evaluator {
   runProgram(program: Program, env: Env): void {
     this.page = null;
     this.game = null;
+    this.exeTargetName = null;
     this.gameState = { running: false, quit: false };
     this.programEnv = env;
+    // build 是只读标志：buildexe 声明存在时 main() 里读到 true。
+    // 检查器已把它注册成内置 bool，用户无法声明同名变量覆盖。
+    env.define('build', { kind: 'bool', value: program.buildExe !== null });
     this.classes = new Map<string, ClassDecl>();
     for (const cls of program.classes) this.classes.set(cls.name, cls);
     this.defineFunctions(program.functions, env);

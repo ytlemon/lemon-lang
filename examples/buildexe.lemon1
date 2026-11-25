@@ -1,0 +1,27 @@
+// buildexe：把 websets() / game() 描述的界面打包成独立 .exe
+//   node bin/lemon.js examples/buildexe.lemon1 --no-open
+// 只想验证语言层、跳过耗时打包就加 --no-exe
+#incloud web
+
+__init__ {
+    buildexe = 我的网页程序      //build
+
+    main() {
+        if build = true {
+            say("ok")
+        } else {
+            say("本次不打包")
+        }
+    }
+
+    websets() {
+        web.init() {
+            div (in (0,0;320,120); color=#1f6feb) {
+                "Lemon 打包示例"
+            }
+            button {
+                to "https://example.com"
+            }
+        }
+    }
+}

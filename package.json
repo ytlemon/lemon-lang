@@ -1,6 +1,6 @@
 {
   "name": "lemon-lang",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Lemon 编程语言（.lemon1）：C 风格命令式、静态类型、__init__/main 入口、裸文本字面量、if/cycle、键盘输入与时间单位",
   "keywords": [
     "lemon",

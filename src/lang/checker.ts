@@ -14,6 +14,7 @@ import type { Span } from '../utils/source';
 import type {
   AssignStmt,
   Binary,
+  BuildExeDecl,
   Call,
   ClassDecl,
   ClassField,
@@ -284,6 +285,17 @@ class Checker {
     if (options.builtins !== undefined) {
       for (const [name, builtin] of options.builtins) this.hoistBuiltin(name, builtin);
     }
+
+    // build 是 buildexe 提供的内置 bool 标志（有 buildexe 声明即为 true）。
+    // 运行期由 Evaluator 写入同一个名字，这里只让静态检查认得它、且不可被覆盖。
+    this.hoisted.set('build', {
+      name: 'build',
+      kind: 'variable',
+      type: 'bool',
+      span: { line: 1, col: 1, endLine: 1, endCol: 1, start: 0, end: 0 },
+      decl: null,
+      builtin: null,
+    });
   }
 
   /**
@@ -326,6 +338,9 @@ class Checker {
           break;
         case 'Game':
           this.checkGame(stmt);
+          break;
+        case 'BuildExe':
+          this.checkBuildExe(stmt);
           break;
         case 'Class':
           this.checkClass(stmt);
@@ -442,6 +457,9 @@ class Checker {
           break;
         case 'ReturnStmt':
           this.checkReturnStmt(stmt);
+          break;
+        case 'BuildExe':
+          this.checkBuildExe(stmt);
           break;
         case 'Assign':
           this.checkAssign(stmt);
@@ -942,6 +960,9 @@ class Checker {
         case 'ReturnStmt':
           this.checkReturnStmt(stmt);
           break;
+        case 'BuildExe':
+          this.checkBuildExe(stmt);
+          break;
         case 'Assign':
           this.checkAssign(stmt);
           break;
@@ -1284,6 +1305,29 @@ class Checker {
       }
       default:
         return;
+    }
+  }
+
+  /**
+   * `buildexe = 文件名`：右侧求值为 text，且必须有 web / game 页面可打包。
+   */
+  private checkBuildExe(stmt: BuildExeDecl): void {
+    const type = this.checkExpr(stmt.filename);
+    if (type !== 'text' && type !== 'any') {
+      this.report(
+        ErrorCodes.BUILD_FILENAME,
+        'buildexe 的文件名必须是文本',
+        stmt.filename.span,
+        '写裸文本或引号字符串，例如：buildexe = 我的游戏、buildexe = "my game.exe"',
+      );
+    }
+    if (!this.modules.has(WEBSETS_MODULE) && !this.modules.has(GAME_MODULE)) {
+      this.report(
+        ErrorCodes.BUILD_MODULE,
+        'buildexe 需要 websets() 或 game() 提供可打包的页面',
+        stmt.span,
+        `请在文件开头写 #incloud ${WEBSETS_MODULE} 或 #incloud ${GAME_MODULE}，并用 websets() / game() 描述界面`,
+      );
     }
   }
 

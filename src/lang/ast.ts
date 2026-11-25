@@ -204,6 +204,7 @@ export type Stmt =
   | ReturnStmt
   | WebSetsDecl
   | GameDecl
+  | BuildExeDecl
   | ClassDecl
   | AssignStmt
   | OutputStmt
@@ -428,6 +429,33 @@ export interface GameDecl {
   kind: 'Game';
   /** game.init() 块；缺失时为 null，由静态检查报 E0336 */
   init: GameInit | null;
+  nameSpan: Span;
+  span: Span;
+}
+
+/* ------------------------------------------------------------------ */
+/* buildexe = 文件名：把 websets() / game() 的页面打包成 exe             */
+/* ------------------------------------------------------------------ */
+
+/**
+ * `buildexe = 文件名` —— 声明本次运行的打包目标。
+ *
+ *   buildexe = 我的游戏
+ *
+ * 与 `main()` / `websets()` / `game()` 同级（`__init__` 顶层），至多一个。
+ * 右侧必须求值为 text（裸文本或引号字符串都行）；宿主（CLI）在 main() 跑完、
+ * 页面生成后，把页面内容打包成一个同名 .exe。
+ *
+ * 它同时决定内置 bool 变量 `build` 的值：写了这个声明就为 true，否则为 false。
+ * 因此 `if build == true { ... }`（或兼容写法 `if build = true { ... }`）
+ * 只在真正会打包时成立。打包需要 `#incloud web` 或 `#incloud game` 才能
+ * 提供可打包的页面，否则报 E0349。
+ */
+export interface BuildExeDecl {
+  kind: 'BuildExe';
+  /** 输出文件名表达式（求值为 text） */
+  filename: Expr;
+  /** `buildexe` 这处声明的位置 */
   nameSpan: Span;
   span: Span;
 }
@@ -770,6 +798,8 @@ export interface Program {
   websets: WebSetsDecl | null;
   /** game() 声明；没写时为 null */
   game: GameDecl | null;
+  /** buildexe 声明；没写时为 null（不打包） */
+  buildExe: BuildExeDecl | null;
   /** class 声明，按书写顺序 */
   classes: ClassDecl[];
 }

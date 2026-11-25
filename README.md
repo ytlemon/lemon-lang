@@ -68,6 +68,7 @@ $ lemon examples/hello.lemon1
 | 输出 | `say(x)` 输出一个值并**自动换行** |
 | 引入 | `#incloud 工具` 把同目录的 `.lemon1` 源码并入本程序；`#incloud web` 启用内置能力模块。写在行首独占一行，被引入的文件只写 `def` 与变量 |
 | 网页界面 | `websets()` 与 `main()` 同级，声明式描述页面：`web.init() { button { to "localhost:9000" } div (in (0,0;256,256); color=#ffffff) { 你好 } }`；元素有 `button` / `div` / 文本，`div` 用 `in (x1,y1;x2,y2)` 定位、`color=#rrggbb` 上色（颜色是文本字面量）。`main()` 跑完后生成同名 `.html` 并打开浏览器（`--no-open` 只落盘）。需要 `#incloud web` |
+| 打包 exe | `buildexe = 文件名` 写在 `__init__` 顶层，把 `websets()` / `game()` 的页面打包成同名 `.exe`（双击打开浏览器界面）。内置 bool 变量 `build`：有 `buildexe` 声明时为 `true`，用 `if build == true { say("ok") }` 判断（也兼容单等号 `if build = true`）。`--no-exe` 只生成 `.html` 不打包；需要 `#incloud web` 或 `#incloud game` 提供界面 |
 | 错误处理 | `try { ... } catch (错误) { ... }` 捕获**运行期**错误；错误值可读 `code` / `line` / `message` |
 | 语句分隔 | **分号可写可不写**，靠换行断句；写在同一行时才需要 `;` |
 | 注释 | `// 行注释`、`/* 块注释，支持嵌套 */` |
@@ -164,7 +165,7 @@ lemon version | --version    版本
 
 ```
 $ lemon
-Lemon v1.0.0 交互式解释器
+Lemon v1.0.1 交互式解释器
 输入 :help 查看帮助，:quit 退出。语句可跨行，花括号未闭合时自动续行。
 
 lemon> int a = 7

@@ -143,6 +143,11 @@ export interface RunResult {
    * 与 page 同理：求值器只算数据，落盘 .html 与打开浏览器由宿主决定。
    */
   game: GameWindow | null;
+  /**
+   * `buildexe = 文件名` 求出的 exe 目标文件名；没写声明或运行失败时为 null。
+   * 与 page / game 同理：求值器只产出文件名，实际打包由宿主（CLI）完成。
+   */
+  buildExe: string | null;
 }
 
 /** 完整执行一份已加载的源码：静态检查通过后才运行 */
@@ -162,6 +167,7 @@ export function runSourceFile(source: SourceFile, options: RunSourceOptions): Ru
       env: options.env ?? new Env(),
       page: null,
       game: null,
+      buildExe: null,
     };
   }
 
@@ -187,6 +193,7 @@ export function runSourceFile(source: SourceFile, options: RunSourceOptions): Ru
         env,
         page: null,
         game: null,
+        buildExe: null,
       };
     }
     throw error;
@@ -200,6 +207,7 @@ export function runSourceFile(source: SourceFile, options: RunSourceOptions): Ru
     env,
     page: evaluator.webPage,
     game: evaluator.gameWindow,
+    buildExe: evaluator.exeTarget,
   };
 }
 

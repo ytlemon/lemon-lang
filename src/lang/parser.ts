@@ -49,6 +49,7 @@ import type {
   BinaryOp,
   BoolLit,
   BreakStmt,
+  BuildExeDecl,
   Call,
   CdStmt,
   ClassDecl,
@@ -149,6 +150,7 @@ class Parser {
     const classes: ClassDecl[] = [];
     let websets: WebSetsDecl | null = null;
     let game: GameDecl | null = null;
+    let buildExe: BuildExeDecl | null = null;
 
     while (!this.check(TokenKind.RBrace) && !this.check(TokenKind.Eof)) {
       const stmt = this.parseStatement(true);
@@ -177,6 +179,18 @@ class Parser {
           });
         }
         websets = stmt;
+      }
+      if (stmt.kind === 'BuildExe') {
+        if (buildExe !== null) {
+          throw new LemonError({
+            code: ErrorCodes.DUPLICATE_DECL,
+            phase: 'parse',
+            message: 'buildexe 只能声明一次',
+            span: stmt.nameSpan,
+            hint: `第一个 buildexe 声明于 ${buildExe.nameSpan.line} 行`,
+          });
+        }
+        buildExe = stmt;
       }
       if (stmt.kind === 'FuncDecl') {
         if (stmt.isMain) {
@@ -220,7 +234,7 @@ class Parser {
       });
     }
 
-    return { statements, initSpan, main, functions, websets, game, classes };
+    return { statements, initSpan, main, functions, websets, game, buildExe, classes };
   }
 
   parseFragment(): Stmt[] {
@@ -251,6 +265,15 @@ class Parser {
           message: 'REPL 里不能使用 game()',
           span: this.peek().span,
           hint: 'game() 要产出 .html 文件，需要文件上下文；请写成 .lemon1 文件后用 lemon run 运行',
+        });
+      }
+      if (this.checkBuildExe()) {
+        throw new LemonError({
+          code: ErrorCodes.UNEXPECTED_TOKEN,
+          phase: 'parse',
+          message: 'REPL 里不能使用 buildexe',
+          span: this.peek().span,
+          hint: 'buildexe 要产出 .exe 文件，需要文件上下文；请写成 .lemon1 文件后用 lemon run 运行',
         });
       }
       if (this.checkClassDecl()) {
@@ -303,6 +326,19 @@ class Parser {
         });
       }
       return this.parseGame();
+    }
+    // `buildexe = 文件名`：只作为 __init__ 顶层的打包声明
+    if (this.checkBuildExe()) {
+      if (!topLevel) {
+        throw new LemonError({
+          code: ErrorCodes.UNEXPECTED_TOKEN,
+          phase: 'parse',
+          message: 'buildexe 只能写在 __init__ 顶层',
+          span: this.peek().span,
+          hint: '它与 main() 同级，要写在 __init__ { ... } 里面、函数体之外',
+        });
+      }
+      return this.parseBuildExe();
     }
     // `game.running = True`：只面向 game 命名空间的字段赋值
     if (this.checkAssign()) return this.parseAssign();
@@ -499,6 +535,20 @@ class Parser {
     for (;;) {
       // 循环入口一定刚解析完一个条件，此时遇到 '=' 几乎都是把 == 写成了 =
       if (this.check(TokenKind.Assign)) {
+        // 唯一例外：buildexe 的内置 bool 标志允许 `if build = true` 这种写法。
+        // build 是本次功能新增的标志变量，不是可赋值变量，这里只做语法糖展开。
+        if (condition !== null && condition.kind === 'Ident' && condition.name === 'build') {
+          this.advance(); // '='
+          const right = this.parseExpr();
+          condition = {
+            kind: 'Binary',
+            op: '==',
+            left: condition,
+            right,
+            span: cover(condition.span, right.span),
+          };
+          continue;
+        }
         const t = this.peek();
         throw new LemonError({
           code: ErrorCodes.EXPECTED_TOKEN,
@@ -932,6 +982,32 @@ class Parser {
       this.tokens[this.pos + 2]?.lexeme === 'init' &&
       this.tokens[this.pos + 3]?.kind === TokenKind.LParen
     );
+  }
+
+  /**
+   * 上下文关键字：只有「标识符 buildexe 紧跟 `=`」才算打包声明。
+   * `buildexe` 不在 KEYWORDS 里，所以 `say(buildexe)`、`text buildexe = 1`
+   * 这类既有写法不受影响。
+   */
+  private checkBuildExe(): boolean {
+    return (
+      this.peek().kind === TokenKind.Ident &&
+      this.peek().lexeme === 'buildexe' &&
+      this.tokens[this.pos + 1]?.kind === TokenKind.Assign
+    );
+  }
+
+  /** `buildexe = <文件名>`：文件名是一个 text 表达式（裸文本或引号字符串） */
+  private parseBuildExe(): BuildExeDecl {
+    const nameTok = this.advance(); // 'buildexe'
+    this.advance(); // '='
+    const filename = this.parseExpr();
+    return {
+      kind: 'BuildExe',
+      filename,
+      nameSpan: nameTok.span,
+      span: cover(nameTok.span, filename.span),
+    };
   }
 
   /** 赋值：`<名字> . <字段> =`（目前只有 game.running / game.quit 合法） */
